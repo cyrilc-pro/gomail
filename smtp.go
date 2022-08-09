@@ -88,13 +88,13 @@ func (d *Dialer) Dial() (SendCloser, error) {
 		conn = tlsClient(conn, d.tlsConfig())
 	}
 
+	if d.Timeout > 0 {
+		conn.SetDeadline(time.Now().Add(d.Timeout))
+	}
+
 	c, err := smtpNewClient(conn, d.Host)
 	if err != nil {
 		return nil, err
-	}
-
-	if d.Timeout > 0 {
-		conn.SetDeadline(time.Now().Add(d.Timeout))
 	}
 
 	if d.LocalName != "" {
